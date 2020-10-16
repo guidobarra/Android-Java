@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "931536052904",
+    "firebase_url": "https://soaproject-ecffd.firebaseio.com",
+    "project_id": "soaproject-ecffd",
+    "storage_bucket": "soaproject-ecffd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931536052904:android:fe03a832c8d77eedc2989d",
+        "android_client_info": {
+          "package_name": "com.gubadev.soaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931536052904-vpfebls28jmj30rh96pea0nieskocga1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxh9p1859T9oujFDn8V8WC5U3Q7ylRy6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "931536052904-vpfebls28jmj30rh96pea0nieskocga1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
