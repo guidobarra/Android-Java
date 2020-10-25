@@ -26,6 +26,13 @@ public class Constants {
 
     public static final String ID = "id";
 
+    public static final String TABLE_SCORE = "Score";
+    public static final String DATE = "date";
+    public static final String SCORE = "score";
+    public static final String TIME = "time";
+    public static final String NAME_GAMER = "name_gamer";
+
+
 
 
 }
