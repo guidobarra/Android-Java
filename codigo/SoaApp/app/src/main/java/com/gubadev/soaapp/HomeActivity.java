@@ -2,8 +2,6 @@ package com.gubadev.soaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
@@ -21,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView providerEditText;
 
     private Button logOut;
+    private Button playGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +31,8 @@ public class HomeActivity extends AppCompatActivity {
         providerEditText = findViewById(R.id.providerTextView);
 
         logOut = findViewById(R.id.logOutButton);
+        playGame = findViewById(R.id.playButton);
+
 
         Bundle bundle = this.getIntent().getExtras();
 
@@ -54,6 +55,12 @@ public class HomeActivity extends AppCompatActivity {
 
             Intent instant = new Intent(HomeActivity.this, LogInActivity.class);
             startActivity(instant);
+        });
+
+
+        playGame.setOnClickListener( view -> {
+            Intent intent = new Intent( HomeActivity.this, GameActivity.class);
+            startActivity(intent);
         });
     }
 

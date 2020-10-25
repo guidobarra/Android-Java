@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--user-permission android:name="android.permission.INTERNET"/-->
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".HomeActivity" />
         <activity android:name=".LogInActivity">
@@ -23,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GameActivity"/>
+        <service android:name=".Service.SensorBackgroundService"/>
         <service android:name=".service.HTTPService"
             android:exported="false"/>
     </application>
