@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Soa App</string>
+
+    <string name="log_in">Log In</string>
+    <string name="register">Registrar</string>
 </resources>

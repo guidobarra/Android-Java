@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.gubadev.soaapp.HomeActivity;
+import com.gubadev.soaapp.MySingleton;
 import com.gubadev.soaapp.util.Util;
 
 import org.json.JSONException;
@@ -23,6 +24,12 @@ public class ReceptorOperacion extends BroadcastReceiver {
                 if (Util.isEmptyOrNull(responseJSON) || !responseJson.getBoolean("success")) {
                     return;
                 }
+                MySingleton singleton = MySingleton.getInstance();
+
+                singleton.setEmail("");
+                singleton.setToken(responseJson.getString("token"));
+                singleton.setTokenRefresh(responseJson.getString("token_refresh"));
+
                 Log.i("responseJSON", responseJSON);
                 Intent home = new Intent(context, HomeActivity.class);
                 home.putExtra("email", "GUIDO");

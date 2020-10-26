@@ -123,7 +123,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void showAlert() {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.displayAlertDialog(RegisterActivity.this,
                 "Error",
                 "Se ha producido un error autenticando el usuario",
