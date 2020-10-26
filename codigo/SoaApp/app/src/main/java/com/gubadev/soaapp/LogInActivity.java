@@ -3,6 +3,7 @@ package com.gubadev.soaapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.gubadev.soaapp.broadcast.ReceptorOperacion;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.service.HTTPService;
 import com.gubadev.soaapp.util.AlertDialog;
@@ -44,8 +46,19 @@ public class LogInActivity extends AppCompatActivity {
         password = findViewById(R.id.pass);
 
         registerButton.setOnClickListener(showActivityRegister);
-
         logOutButton.setOnClickListener(logIn);
+
+        HTTPService.builder(LogInActivity.this);
+
+        configurationBroadcastReceiver();
+    }
+
+    private void configurationBroadcastReceiver() {
+        IntentFilter filter = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        registerReceiver(new ReceptorOperacion(), filter);
     }
 
     private View.OnClickListener logIn = view -> {

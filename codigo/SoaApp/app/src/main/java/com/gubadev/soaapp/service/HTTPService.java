@@ -43,10 +43,10 @@ public class HTTPService extends IntentService {
         try {
             Log.i(TAG_HTTP_SERVICE, "onHandleIntent");
 
-            /**OBTENGO LAS VARIABLES*/
+            /*OBTENGO LAS VARIABLES*/
             String requestJSON = intent.getExtras().getString("requestJSON");
             String urlPath = intent.getExtras().getString("url");
-            JSONObject request = new JSONObject(requestJSON);
+            //JSONObject requestJSONObject = new JSONObject(requestJSON);
 
             Log.i(TAG_HTTP_SERVICE, requestJSON);
             Log.i(TAG_HTTP_SERVICE, urlPath);
@@ -54,7 +54,7 @@ public class HTTPService extends IntentService {
             String responseJSON = "";
             URL url = new URL(urlPath);
 
-            /**CONFIGURACION DEL REST*/
+            /*CONFIGURACION DEL REST*/
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setDoInput(true);
@@ -64,16 +64,16 @@ public class HTTPService extends IntentService {
 
             DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
 
-            /**LE PASO EL RESQUEST*/
+            /*LE PASO EL RESQUEST*/
             wr.write(requestJSON.getBytes("UTF-8"));
 
-            /**LIMPIO*/
+            /*LIMPIO*/
             wr.flush();
 
-            /**CONECTO*/
+            /*CONECTO*/
             urlConnection.connect();
 
-            /**VARIFICO LA RESPUESTA*/
+            /*VARIFICO LA RESPUESTA*/
             int responseCode = urlConnection.getResponseCode();
 
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
@@ -84,7 +84,7 @@ public class HTTPService extends IntentService {
                 responseJSON = convertInputStreamToString(inputStream);
             }
 
-            /**CIERRO LAS CONECCIONES*/
+            /*CIERRO LAS CONECCIONES*/
             wr.close();
             urlConnection.disconnect();
 

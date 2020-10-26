@@ -2,6 +2,7 @@ package com.gubadev.soaapp.game;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 
+import com.gubadev.soaapp.HomeActivity;
 import com.gubadev.soaapp.util.AlertDialog;
 
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ public class GameView extends View implements SensorEventListener {
 
     private Timer timer = new Timer();
     private TimerGame timerGame = new TimerGame();
+    private Paint p = new Paint();
 
     public GameView(Activity activity) {
         super(activity);
@@ -83,26 +86,13 @@ public class GameView extends View implements SensorEventListener {
 
     }
 
-    private void setBlackHole() {
-        for (int i=0; i<4; i++){
-            Random r = new Random();
-
-            int maxWidth = width - 8*BORDER_X;
-            int maxHeight = height - 8*BORDER_Y;
-            
-            float x = r.nextInt(maxWidth) + 4*BORDER_X;
-            float y = r.nextInt(maxHeight) + 4*BORDER_Y;
-            blackHoles.add(new Point(x, y));
-        }
-
-    }
-
     /*CAMBIA LOS VALORES DE LOS TRES EJES DEL ACELEROMETRO*/
     @Override
     public void onSensorChanged(SensorEvent event) {
 
         if (time == 0 || isCatchBlackHole()){
             stopGame();
+            //Intent intent = new Intent(this.activity, HomeActivity.class);
             AlertDialog.displayAlertDialogGame(
                     activity,
                    "Game Over",
@@ -146,8 +136,6 @@ public class GameView extends View implements SensorEventListener {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        //Paint scorePaint = new Paint();
-        Paint p = new Paint();
         p.setColor(Color.RED);
         p.setTextSize(50);
         canvas.drawText(
@@ -156,7 +144,6 @@ public class GameView extends View implements SensorEventListener {
                 50,
                 p);
 
-        //Paint timePaint = new Paint();
         p.setColor(Color.RED);
         p.setTextSize(50);
         canvas.drawText(
@@ -165,17 +152,14 @@ public class GameView extends View implements SensorEventListener {
                 50,
                 p);
 
-        //Paint foodPaint = new Paint();
         p.setColor(Color.BLUE);
         canvas.drawCircle(xSpacialStation, ySpacialStation, radiusSpacialStation, p);
 
-        //Paint circlePaint = new Paint();
         p.setColor(Color.RED);
         canvas.drawCircle(x, y, radiusSpacecraft, p);
 
 
         for (Point bH: blackHoles) {
-            //Paint blackHole = new Paint();
             p.setColor(Color.BLACK);
             canvas.drawCircle(bH.getX(), bH.getY(), radiusBlackHole, p);
         }
@@ -221,6 +205,20 @@ public class GameView extends View implements SensorEventListener {
         int radius = this.radiusSpacecraft;
         return xSpacialStation <= (x + radius) && xSpacialStation >=(x -radius) &&
                 ySpacialStation <= (y + radius) && ySpacialStation >= (y -radius);
+    }
+
+    private void setBlackHole() {
+        for (int i=0; i<4; i++){
+            Random r = new Random();
+
+            int maxWidth = width - 8*BORDER_X;
+            int maxHeight = height - 8*BORDER_Y;
+
+            float x = r.nextInt(maxWidth) + 4*BORDER_X;
+            float y = r.nextInt(maxHeight) + 4*BORDER_Y;
+            blackHoles.add(new Point(x, y));
+        }
+
     }
 
     class TimerGame extends TimerTask {
