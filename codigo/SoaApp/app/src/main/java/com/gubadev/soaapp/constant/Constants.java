@@ -17,7 +17,7 @@ public class Constants {
     public static final Integer NUM_GROUP = 22;
 
 
-    public static final String TABLE_USER = "User";
+    public static final String TABLE_USER = "user";
     public static final String EMAIL = "email";
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
@@ -26,11 +26,12 @@ public class Constants {
 
     public static final String ID = "id";
 
-    public static final String TABLE_SCORE = "Score";
+    public static final String TABLE_SCORE = "score";
     public static final String DATE = "date";
-    public static final String SCORE = "score";
+    public static final String SCORE = "score_user";
     public static final String TIME = "time";
     public static final String NAME_GAMER = "name_gamer";
+    public static final String USER_ID = TABLE_USER+ID;
 
 
 

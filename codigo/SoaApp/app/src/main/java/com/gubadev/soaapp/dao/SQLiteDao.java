@@ -2,12 +2,14 @@ package com.gubadev.soaapp.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.gubadev.soaapp.MySingleton;
 import com.gubadev.soaapp.configuration.SQLiteConfig;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dto.UserDTO;
@@ -56,6 +58,40 @@ public class SQLiteDao {
             db.close();
         }
 
+        return true;
+    }
+
+    public static boolean saveScore(@Nullable SQLiteDatabase db) {
+
+        int idUser = -1;
+        String firstName = "";
+        String lastName = "";
+
+        c = db.rawQuery("Select * from " + Constants.TABLE_USER +
+                        " WHERE " + Constants.EMAIL + " =  ?",
+                new String[]{MySingleton.getInstance().getEmail()});
+
+
+        if (c.getCount() != 0) {
+            return false;
+        }
+
+        if (c.moveToFirst()){
+            do {
+                firstName = c.getString(c.getColumnIndex(Constants.FIRST_NAME));
+                lastName = c.getString(c.getColumnIndex(Constants.LAST_NAME));
+                idUser = c.getInt(c.getColumnIndex(Constants.ID));
+            } while(c.moveToNext());
+        }
+
+        ContentValues values = new ContentValues();
+        //values.put(Constants.ID, "");
+        //values.put(Constants.DATE, "");
+        values.put(Constants.SCORE, MySingleton.getInstance().getScore());
+        values.put(Constants.TIME, MySingleton.getInstance().getTime());
+        values.put(Constants.NAME_GAMER, firstName + "_" + lastName);
+        values.put(Constants.USER_ID, idUser);
+        Long result = db.insert(Constants.TABLE_SCORE, Constants.ID, values);
         return true;
     }
 }

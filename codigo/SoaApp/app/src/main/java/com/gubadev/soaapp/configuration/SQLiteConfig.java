@@ -23,12 +23,12 @@ public class SQLiteConfig extends SQLiteOpenHelper {
                                           Constants.SCORE + " INTEGER, " +
                                           Constants.TIME + " INTEGER, " +
                                           Constants.NAME_GAMER + " VARCHAR(60), " +
-                                          Constants.TABLE_USER + Constants.ID + " INTEGER NOT NULL, "+
-                                         "FOREIGN KEY (UsuarioId) REFERENCES " +
-                                          Constants.TABLE_USER + "(\"+Id+\"));");
+                                          Constants.USER_ID + " INTEGER NOT NULL, "+
+                                         "FOREIGN KEY (" + Constants.USER_ID + ") REFERENCES " +
+                                          Constants.TABLE_USER + "(" + Constants.ID + "));");
 
     private static final String DB_NAME = "db.sqlite";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String TAG_DB_SQLITE = "DB_SQLITE";
 
     public SQLiteConfig(Context context) {
