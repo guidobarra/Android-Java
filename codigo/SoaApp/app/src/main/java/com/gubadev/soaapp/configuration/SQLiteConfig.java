@@ -19,7 +19,7 @@ public class SQLiteConfig extends SQLiteOpenHelper {
 
     private static final String SCORE = ("CREATE TABLE " + Constants.TABLE_SCORE + " (" +
                                           Constants.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                          Constants.DATE + " default CURRENT_DATE, " +
+                                          Constants.DATE + " TIMESTAMP  NOT NULL, " +
                                           Constants.SCORE + " INTEGER, " +
                                           Constants.TIME + " INTEGER, " +
                                           Constants.NAME_GAMER + " VARCHAR(60), " +
@@ -28,7 +28,7 @@ public class SQLiteConfig extends SQLiteOpenHelper {
                                           Constants.TABLE_USER + "(" + Constants.ID + "));");
 
     private static final String DB_NAME = "db.sqlite";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String TAG_DB_SQLITE = "DB_SQLITE";
 
     public SQLiteConfig(Context context) {
@@ -49,6 +49,11 @@ public class SQLiteConfig extends SQLiteOpenHelper {
         Log.i(TAG_DB_SQLITE, "onUpgrade: DROP TABLE");
         db.execSQL("DROP TABLE IF EXISTS " + Constants.TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + Constants.TABLE_SCORE);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.setVersion(oldVersion);
     }
 
 }

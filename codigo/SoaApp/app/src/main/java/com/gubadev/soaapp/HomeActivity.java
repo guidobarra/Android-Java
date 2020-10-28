@@ -22,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button logOut;
     private Button playGame;
     private Button sensor;
+    private Button topGamer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,12 @@ public class HomeActivity extends AppCompatActivity {
         logOut = findViewById(R.id.logOutButton);
         playGame = findViewById(R.id.playButton);
         sensor = findViewById(R.id.sensorButton);
+        topGamer = findViewById(R.id.topButton);
 
         logOut.setOnClickListener(signOut);
         playGame.setOnClickListener(playGamer);
         sensor.setOnClickListener(sensorView);
+        topGamer.setOnClickListener(topGamerView);
 
         Bundle bundle = this.getIntent().getExtras();
 
@@ -68,7 +71,10 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
-
+    private View.OnClickListener topGamerView = view -> {
+        Intent intent = new Intent( HomeActivity.this, TopGamerActivity.class);
+        startActivity(intent);
+    };
 
     private void showAlert() {
 
