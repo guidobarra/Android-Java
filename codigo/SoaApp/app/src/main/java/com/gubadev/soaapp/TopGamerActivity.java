@@ -74,13 +74,15 @@ public class TopGamerActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
 
             List<Score> scores = SQLiteDao.getTopGamer(SQLiteDao.builder(TopGamerActivity.this));
-            Integer i = 0;
+            int i = 0;
             for (Score s: scores) {
-                String value = map.get(i).getText() + " " +
-                        s.getNameGamer() + " " +
-                        s.getScore() + " " +
-                        s.getTime();
-                map.get(i).setText(value);
+                if (i<6) {
+                    String value = map.get(i).getText() + " " +
+                            s.getNameGamer() + " " +
+                            s.getScore() + " " +
+                            s.getTime();
+                    map.get(i).setText(value);
+                }
 
                 i++;
             }
