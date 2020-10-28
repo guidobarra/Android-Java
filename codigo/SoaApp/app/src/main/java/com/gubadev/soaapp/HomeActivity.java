@@ -46,14 +46,16 @@ public class HomeActivity extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
 
         String email = bundle.getString("email");
-        String provider = bundle.getString("provider");
 
-        int level = new Intent().getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        providerEditText.setText(String.valueOf(level) + "%");
-        showAlert();
+        emailEditText.setText(email);
+
+        showLevelBattery();
 
     }
 
+    /**
+     * action OnClickListener for sign out
+     */
     private View.OnClickListener signOut = view -> {
         FirebaseAuth.getInstance().signOut();
 
@@ -61,22 +63,34 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(instant);
     };
 
+    /**
+     * action OnClickListener for play game view
+     */
     private View.OnClickListener playGamer = view -> {
         Intent intent = new Intent( HomeActivity.this, GameActivity.class);
         startActivity(intent);
     };
 
+    /**
+     * action OnClickListener for sensor view
+     */
     private View.OnClickListener sensorView = view -> {
         Intent intent = new Intent( HomeActivity.this, SensorActivity.class);
         startActivity(intent);
     };
 
+    /**
+     * action OnClickListener for top gamer view
+     */
     private View.OnClickListener topGamerView = view -> {
         Intent intent = new Intent( HomeActivity.this, TopGamerActivity.class);
         startActivity(intent);
     };
 
-    private void showAlert() {
+    /**
+     * show level battery
+     */
+    private void showLevelBattery() {
 
         IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = registerReceiver(null, iFilter);
@@ -88,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
 
         float batteryPct = level * 100 / (float) scale;
 
-        String batteryLevel = String.valueOf(batteryPct) + "%";
+        String batteryLevel = batteryPct + "%";
         providerEditText.setText(batteryLevel);
         AlertDialog.displayAlertDialog(HomeActivity.this,
                 "Battery",
