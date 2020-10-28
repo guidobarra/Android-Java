@@ -1,4 +1,4 @@
-package com.gubadev.soaapp;
+package com.gubadev.soaapp.singleton;
 
 import android.util.Log;
 
@@ -22,7 +22,16 @@ public class MySingleton {
 
     private String email;
 
+    private Integer score;
+
+    private Integer time;
+
+    private static final Integer DELAY = 5*1000;
+
+    private static final Integer PERIOD = 25*1000*60;
+
     private Timer timer = new Timer();
+
     private RefreshTokenTime refreshTokenTime = new RefreshTokenTime();
 
     private static final MySingleton ourInstance = new MySingleton();
@@ -32,7 +41,7 @@ public class MySingleton {
     }
 
     private MySingleton() {
-        timer.schedule(refreshTokenTime, 0, 20000);
+        timer.schedule(refreshTokenTime, DELAY, 30000);
     }
 
     public String getToken() {
@@ -47,6 +56,14 @@ public class MySingleton {
         return tokenRefresh;
     }
 
+    public Integer getScore() {
+        return score;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -57,6 +74,14 @@ public class MySingleton {
 
     public void setTokenRefresh(String tokenRefresh) {
         this.tokenRefresh = tokenRefresh;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
     }
 
     class RefreshTokenTime extends TimerTask {
@@ -78,7 +103,7 @@ public class MySingleton {
                 public void onResponse(Call<ResponseGeneric> call, Response<ResponseGeneric> response) {
 
                     if (!response.isSuccessful() || !response.body().getSuccess()) {
-
+                        Log.e("error", "");
                         return;
                     }
 
@@ -90,7 +115,6 @@ public class MySingleton {
 
                 @Override
                 public void onFailure(Call<ResponseGeneric> call, Throwable t) {
-
                     call.cancel();
                 }
             });

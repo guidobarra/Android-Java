@@ -17,6 +17,7 @@ import com.gubadev.soaapp.client.CatedraClient;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dto.Event;
 import com.gubadev.soaapp.dto.ResponseGeneric;
+import com.gubadev.soaapp.singleton.MySingleton;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -61,13 +62,13 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         APICatedraSOA clientCatedra = CatedraClient.getClient().create(APICatedraSOA.class);
 
         //OBTENGO EL TOKEN
-        MySingleton singleton = MySingleton.getInstance();
-        String token = singleton.getToken();
+        //MySingleton singleton = MySingleton.getInstance();
+        //String token = singleton.getToken();
 
         //SETTEO EL HEADER
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
-        headers.put("Authorization", "Bearer " + token);
+        headers.put("Authorization", "Bearer " + MySingleton.getInstance().getToken());
 
         Event event = new Event(
                 Constants.ENV,

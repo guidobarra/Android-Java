@@ -8,8 +8,14 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.gubadev.soaapp.LogInActivity;
 import com.gubadev.soaapp.constant.Constants;
+import com.gubadev.soaapp.dao.SQLiteDao;
+import com.gubadev.soaapp.dto.UserDTO;
+import com.gubadev.soaapp.util.AlertDialog;
+import com.gubadev.soaapp.util.Util;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,6 +27,8 @@ import java.net.URL;
 public class HTTPService extends IntentService {
 
     private static final String TAG_HTTP_SERVICE = "HTTPService";
+
+    private static final String TAG_JSON = "JSON";
 
     private static Activity activity;
 
@@ -43,18 +51,21 @@ public class HTTPService extends IntentService {
         try {
             Log.i(TAG_HTTP_SERVICE, "onHandleIntent");
 
-            /*OBTENGO LAS VARIABLES*/
-            String requestJSON = intent.getExtras().getString("requestJSON");
-            String urlPath = intent.getExtras().getString("url");
-            //JSONObject requestJSONObject = new JSONObject(requestJSON);
+            /*GET VALUES*/
+            String requestJSON = intent.getExtras().getString("requestJSON", "");
+            String urlPath = intent.getExtras().getString("url", "");
+            boolean isSaveUser = intent.getExtras().getBoolean("isSaveUser", false);
 
-            Log.i(TAG_HTTP_SERVICE, requestJSON);
-            Log.i(TAG_HTTP_SERVICE, urlPath);
+            /*INSTANCE JSON OBJECT*/
+            JSONObject requestJSONObject = new JSONObject(requestJSON);
+
+            Log.i(TAG_HTTP_SERVICE, "requestJSON: "+requestJSON);
+            Log.i(TAG_HTTP_SERVICE, "urlPath: "+urlPath);
 
             String responseJSON = "";
             URL url = new URL(urlPath);
 
-            /*CONFIGURACION DEL REST*/
+            /*CONFIGURATION REST*/
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setDoInput(true);
@@ -64,18 +75,19 @@ public class HTTPService extends IntentService {
 
             DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
 
-            /*LE PASO EL RESQUEST*/
+            /*SET REQUEST IN BYTE*/
             wr.write(requestJSON.getBytes("UTF-8"));
 
-            /*LIMPIO*/
+            /*CLEAN*/
             wr.flush();
 
-            /*CONECTO*/
+            /*CONNECTION*/
             urlConnection.connect();
 
-            /*VARIFICO LA RESPUESTA*/
+            /*GET RESPONSE*/
             int responseCode = urlConnection.getResponseCode();
 
+            /*CHECK RESPONSE*/
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
                 InputStreamReader inputStream = new InputStreamReader(urlConnection.getInputStream());
                 responseJSON = convertInputStreamToString(inputStream);
@@ -84,22 +96,66 @@ public class HTTPService extends IntentService {
                 responseJSON = convertInputStreamToString(inputStream);
             }
 
-            /*CIERRO LAS CONECCIONES*/
+            /*CLOSE CONNECTIONS*/
             wr.close();
             urlConnection.disconnect();
 
+            JSONObject responseJson = new JSONObject(responseJSON);
+
+            /*CHECK RESPONSE JSON*/
+            if (Util.isEmptyOrNull(responseJSON) || !responseJson.getBoolean("success")) {
+                Log.e(TAG_JSON, "error json failure or JSON empty");
+                showAlert();
+                return;
+            }
+
+            /*CHECK IF SAVE USER*/
+            if (isSaveUser) {
+                /*INSTANCE USER*/
+                UserDTO user = new UserDTO(
+                        requestJSONObject.getString("env"),
+                        requestJSONObject.getString("name"),
+                        requestJSONObject.getString("lastname"),
+                        requestJSONObject.getLong("dni"),
+                        requestJSONObject.getString("email"),
+                        requestJSONObject.getString("password"),
+                        requestJSONObject.getLong("commission")
+                );
+
+                /*SAVE USER WITH SQLITE*/
+                SQLiteDao.saveUser(user, SQLiteDao.builder(activity));
+            }
+
+            /*INSTANCE INTENT, BROADCAST RECEPTOR OPERATION*/
             Intent i = new Intent("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
             i.putExtra("responseJSON", responseJSON);
+            i.putExtra("email", requestJSONObject.getString("email"));
+
+            /*SEND BROADCAST */
             sendBroadcast(i);
 
             Log.i(TAG_HTTP_SERVICE, Constants.STATE_SUCCESS);
         } catch (Exception e) {
             Log.e(TAG_HTTP_SERVICE, Constants.STATE_ERROR);
+            showAlert();
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * show Alert
+     */
+    private void showAlert() {
+        AlertDialog.displayAlertDialog(activity,
+                "Error",
+                "Se ha producido un error autenticando el usuario",
+                "OK");
+    }
+
+    /**
+     * convert Input Stream To String
+     */
     private String convertInputStreamToString(InputStreamReader input) throws Exception{
         BufferedReader br = new BufferedReader(input);
         StringBuilder sb = new StringBuilder();
@@ -114,7 +170,4 @@ public class HTTPService extends IntentService {
         return sb.toString();
     }
 
-    private Context getContext() {
-        return activity;
-    }
 }

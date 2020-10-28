@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.gubadev.soaapp.broadcast.ReceptorOperacion;
+import com.gubadev.soaapp.broadcast.ReceptorOperation;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.service.HTTPService;
 import com.gubadev.soaapp.util.AlertDialog;
@@ -101,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 intent.putExtra("requestJSON", requestJSON.toString());
                 intent.putExtra("url", Constants.URI_CATEDRA_SOA_REGISTER);
+                intent.putExtra("isSaveUser", true);
 
                 startService(intent);
 
@@ -119,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         filter.addCategory(Intent.CATEGORY_DEFAULT);
 
-        registerReceiver(new ReceptorOperacion(), filter);
+        registerReceiver(new ReceptorOperation(), filter);
     }
 
     private void showAlert() {

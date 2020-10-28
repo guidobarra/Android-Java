@@ -2,7 +2,6 @@ package com.gubadev.soaapp.game;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,7 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 
 
-import com.gubadev.soaapp.HomeActivity;
+import com.gubadev.soaapp.singleton.MySingleton;
+import com.gubadev.soaapp.dao.SQLiteDao;
 import com.gubadev.soaapp.util.AlertDialog;
 
 import java.util.ArrayList;
@@ -54,7 +54,8 @@ public class GameView extends View implements SensorEventListener {
 
     /*TIEMPO Y PUNTAJE*/
     private Integer score = 0;
-    private Integer time = 30;
+    private Integer timeGameOver = 30;
+    private Integer timeTotal = 0;
 
     private Activity activity;
 
@@ -90,8 +91,12 @@ public class GameView extends View implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (time == 0 || isCatchBlackHole()){
+        if (timeGameOver == 0 || isCatchBlackHole()){
             stopGame();
+            MySingleton.getInstance().setScore(score);
+            MySingleton.getInstance().setTime(timeTotal);
+
+            SQLiteDao.saveScore(SQLiteDao.builder(activity));
             //Intent intent = new Intent(this.activity, HomeActivity.class);
             AlertDialog.displayAlertDialogGame(
                     activity,
@@ -122,9 +127,8 @@ public class GameView extends View implements SensorEventListener {
             setSpacialStation();
             score++;
             radiusSpacecraft +=1;
-            time+=3;
+            timeGameOver +=3;
         }
-
 
         invalidate();
     }
@@ -147,7 +151,7 @@ public class GameView extends View implements SensorEventListener {
         p.setColor(Color.RED);
         p.setTextSize(50);
         canvas.drawText(
-                "Time: " + time,
+                "Time: " + timeGameOver,
                 450,
                 50,
                 p);
@@ -224,8 +228,9 @@ public class GameView extends View implements SensorEventListener {
     class TimerGame extends TimerTask {
         @Override
         public void run() {
-            time -=1;
-            Log.i("TimerGame", "ENTRO A TIMER: " + time);
+            timeGameOver -=1;
+            timeTotal +=1;
+            Log.i("TimerGame", "ENTRO A TIMER: " + timeGameOver);
         }
     }
 
