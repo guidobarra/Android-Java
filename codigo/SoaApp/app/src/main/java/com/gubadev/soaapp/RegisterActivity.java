@@ -26,19 +26,21 @@ public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG_FIREBASE_REGISTER = "FIREBASE_REGISTER";
 
+    private static final String TAG_JSON = "JSON";
+
     Button register;
 
-    TextInputEditText firstNameText;
-    TextInputEditText lastNameText;
-    EditText dniText;
-    EditText emailText;
-    EditText passwordText;
+    private TextInputEditText firstNameText;
+    private TextInputEditText lastNameText;
+    private EditText dniText;
+    private EditText emailText;
+    private EditText passwordText;
 
-    String firstName;
-    String lastName;
-    Long dni;
-    String email;
-    String password;
+    private String firstName;
+    private String lastName;
+    private Long dni;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +62,12 @@ public class RegisterActivity extends AppCompatActivity {
         configurationBroadcastReceiver();
     }
 
+    /**
+     * action OnClickListener for register
+     */
     private View.OnClickListener registerUser = view -> {
 
+        /*GET VALUES*/
         firstName = Util.getValue(firstNameText);
         lastName = Util.getValue(lastNameText);
         email = Util.getValue(emailText);
@@ -69,26 +75,32 @@ public class RegisterActivity extends AppCompatActivity {
         String valueDni = Util.getValue(dniText);
         dni = Long.valueOf( Util.isEmptyOrNull(valueDni) ? "0" : valueDni);
 
-        if (!validateData()) {
+        /*VALIDATE CONNECTION INTERNET, DATA EMAIL AND PASSWORD*/
+        if (!validate()) {
             return;
         }
 
+        /*GET INSTANCE FIREBASE*/
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+        /*FIREBASE CREATE WITH EMAIL AND PASSWORD*/
         mAuth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener(RegisterActivity.this,
         task -> {
-
+            /*CHECK IS SUCCESSFUL*/
             if (!task.isSuccessful()) {
                 showAlert();
                 Log.e(TAG_FIREBASE_REGISTER, "createUserWithEmailAndPassword:failure", task.getException());
                 return;
             }
+
             Log.i(TAG_FIREBASE_REGISTER, "createUserWithEmailAndPassword:success");
 
             try {
+                /*CREATE JSON FOR HTTP REST /register */
                 JSONObject requestJSON = new JSONObject();
 
+                /*SET VALUES*/
                 requestJSON.put("env", Constants.ENV);
                 requestJSON.put("name", firstName);
                 requestJSON.put("lastname", lastName);
@@ -97,16 +109,19 @@ public class RegisterActivity extends AppCompatActivity {
                 requestJSON.put("password", password);
                 requestJSON.put("commission", Constants.NUM_COMMISSION);
 
+                /*INSTANCE INTENT WITH ACTIVITY AND INTENT SERVICE*/
                 Intent intent = new Intent(RegisterActivity.this, HTTPService.class);
 
+                /*SET VALUES*/
                 intent.putExtra("requestJSON", requestJSON.toString());
                 intent.putExtra("url", Constants.URI_CATEDRA_SOA_REGISTER);
                 intent.putExtra("isSaveUser", true);
 
+                /*START SERVICE*/
                 startService(intent);
 
-
             } catch (Exception e ) {
+                Log.e(TAG_JSON, "error json");
                 e.printStackTrace();
             }
 
@@ -115,6 +130,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     };
 
+    /**
+     * configuration Broadcast Receiver for communication HTTP REST register of user
+     */
     private void configurationBroadcastReceiver() {
         IntentFilter filter = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
 
@@ -123,6 +141,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerReceiver(new ReceptorOperation(), filter);
     }
 
+    /**
+     * show Alert
+     */
     private void showAlert() {
         AlertDialog.displayAlertDialog(RegisterActivity.this,
                 "Error",
@@ -130,7 +151,12 @@ public class RegisterActivity extends AppCompatActivity {
                 "OK");
     }
 
-    public boolean validateData() {
+    /**
+     * validate connection internet
+     * validate values
+     * validate length password
+     */
+    public boolean validate() {
 
         boolean internetConnection = Internet.isInternetAvailable(this);
 

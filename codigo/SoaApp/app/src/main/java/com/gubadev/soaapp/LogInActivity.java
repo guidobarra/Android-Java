@@ -107,7 +107,7 @@ public class LogInActivity extends AppCompatActivity {
                 /*INSTANCE INTENT WITH ACTIVITY AND INTENT SERVICE*/
                 Intent intent = new Intent(LogInActivity.this, HTTPService.class);
 
-                /*INSTANCE INTENT WITH ACTIVITY AND INTENT SERVICE*/
+                /*SET VALUES*/
                 intent.putExtra("requestJSON", requestJSON.toString());
                 intent.putExtra("url", Constants.URI_CATEDRA_SOA_LOGIN);
                 intent.putExtra("isSaveUser", false);
