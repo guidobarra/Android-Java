@@ -137,9 +137,10 @@ public class SQLiteDao {
 
         try {
 
-
             /*QUERY*/
-            c = db.rawQuery("Select * from " + Constants.TABLE_SCORE, null);
+            c = db.rawQuery("Select * from " +
+                                Constants.TABLE_SCORE + " " +
+                                "Order by " + Constants.SCORE + " desc", null);
 
             /*CHECK EXIST ELEMENT*/
             if (c.moveToFirst()) {
