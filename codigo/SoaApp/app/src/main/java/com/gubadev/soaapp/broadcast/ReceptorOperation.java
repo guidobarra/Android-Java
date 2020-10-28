@@ -21,6 +21,7 @@ public class ReceptorOperation extends BroadcastReceiver {
 
         try {
             String responseJSON = intent.getStringExtra("responseJSON");
+            String email = intent.getStringExtra("email");
             JSONObject responseJson = new JSONObject(responseJSON);
 
             /*CHECK RESPONSE*/
@@ -36,7 +37,7 @@ public class ReceptorOperation extends BroadcastReceiver {
 
             /*INSTANCE INTENT, LOGINACTIVITY -> HomeActivity*/
             Intent home = new Intent(context, HomeActivity.class);
-            home.putExtra("email", responseJson.getString("email"));
+            home.putExtra("email", email);
             home.putExtra("provider", "BASICO");
 
             /*START INTENT*/
