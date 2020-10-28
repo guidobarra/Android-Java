@@ -6,15 +6,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.gubadev.soaapp.client.APICatedraSOA;
+import com.gubadev.soaapp.client.CatedraClient;
+import com.gubadev.soaapp.constant.Constants;
+import com.gubadev.soaapp.dto.Event;
+import com.gubadev.soaapp.dto.ResponseGeneric;
+import com.gubadev.soaapp.singleton.MySingleton;
 import com.gubadev.soaapp.util.AlertDialog;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeActivity extends AppCompatActivity {
+
+    private static final String TAG_RETROFIT = "RETROFIT";
 
     private TextView emailEditText;
     private TextView providerEditText;
@@ -23,6 +39,8 @@ public class HomeActivity extends AppCompatActivity {
     private Button playGame;
     private Button sensor;
     private Button topGamer;
+
+    private String batteryLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
 
         showLevelBattery();
 
+        saveEvent();
     }
 
     /**
@@ -102,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
 
         float batteryPct = level * 100 / (float) scale;
 
-        String batteryLevel = batteryPct + "%";
+        batteryLevel = batteryPct + "%";
         providerEditText.setText(batteryLevel);
         AlertDialog.displayAlertDialog(HomeActivity.this,
                 "Battery",
@@ -110,5 +129,47 @@ public class HomeActivity extends AppCompatActivity {
                 "OK");
     }
 
+    /**
+     * save event to REST /event
+     */
+    private void saveEvent() {
+
+        APICatedraSOA clientCatedra = CatedraClient.getClient().create(APICatedraSOA.class);
+
+        //SET HEADER
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("Authorization", "Bearer " + MySingleton.getInstance().getToken());
+
+        //INSTANCE EVENT
+        Event event = new Event(
+                Constants.ENV,
+                "login",
+                "level battery: " + batteryLevel);
+
+        //CALL API REST CATEDRA /event
+        Call<ResponseGeneric> call = clientCatedra.saveEvent(headers, event);
+
+        //ENQUEUE PROCESS, SHARE CLOCK CYCLE WITH MAIN THREAD
+        call.enqueue(new Callback<ResponseGeneric>() {
+
+            @Override
+            public void onResponse(Call<ResponseGeneric> call, Response<ResponseGeneric> response) {
+
+                //CHECK RESPONSE
+                if (!response.isSuccessful() || !response.body().getSuccess()) {
+                    Log.e(TAG_RETROFIT, "onResponse: response error");
+                    return;
+                }
+                Log.i(TAG_RETROFIT, "onResponse: response Success");
+            }
+
+            @Override
+            public void onFailure(Call<ResponseGeneric> call, Throwable t) {
+                Log.e(TAG_RETROFIT, "onFailure");
+                call.cancel();
+            }
+        });
+    }
 
 }
