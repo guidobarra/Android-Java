@@ -17,15 +17,17 @@ public class GameActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*INSTANCIO GAMEVIEW CON UN ACTIVITY*/
+        /*INSTANCE GAME VIEW WITH ACTIVITY GAME*/
         entertainment = new GameView(this);
 
-        /*SETTEO el CONTENT VIEW CON MI GAMEVIEW*/
+        /*SET VIEW WITH MY GAME VIEW*/
         setContentView(entertainment);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    /**PARA EL PAUSE, STOP Y DISTROY TENGO QUE PARAR EL SENSOR ACELEROMETRO*/
+    /**
+     * FOR PAUSE, STOP Y DESTROY HAVE STOP GAME
+     */
     @Override
     protected void onPause() {
         super.onPause();
