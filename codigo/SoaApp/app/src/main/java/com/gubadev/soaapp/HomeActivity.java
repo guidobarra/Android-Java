@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -61,11 +62,7 @@ public class HomeActivity extends AppCompatActivity {
         sensor.setOnClickListener(sensorView);
         topGamer.setOnClickListener(topGamerView);
 
-        Bundle bundle = this.getIntent().getExtras();
-
-        String email = bundle.getString("email");
-
-        emailEditText.setText(email);
+        emailEditText.setText(Html.fromHtml("Welcome <b>" + MySingleton.getInstance().getEmail() +"</b>"));
 
         showLevelBattery();
 
@@ -121,11 +118,11 @@ public class HomeActivity extends AppCompatActivity {
 
         float batteryPct = level * 100 / (float) scale;
 
-        batteryLevel = batteryPct + "%";
+        batteryLevel = "Battery level: "+ batteryPct + "%";
         providerEditText.setText(batteryLevel);
         AlertDialog.displayAlertDialog(HomeActivity.this,
                 "Battery",
-                "El nivel de la bateria es: " + batteryLevel,
+                "Level of battery is: " + batteryLevel,
                 "OK");
     }
 

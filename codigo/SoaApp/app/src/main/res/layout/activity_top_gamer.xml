@@ -17,6 +17,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/topTitle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="title" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+        <TextView
             android:id="@+id/topOne"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -61,16 +71,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:text="5th" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
-        <TextView
-            android:id="@+id/topSixth"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="6th" />
 
 
     </LinearLayout>

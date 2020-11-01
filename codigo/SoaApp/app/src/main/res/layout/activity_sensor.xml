@@ -14,12 +14,12 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/limpia"
+            android:id="@+id/registerEvent"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            android:text="Registar evento" />
+            android:text="Register event" />
     </LinearLayout>
 
     <ScrollView
@@ -34,31 +34,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/detecta"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/giroscopo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-            <TextView
-                android:id="@+id/giro"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/orientacion"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/magneticImage"
+                android:layout_width="107dp"
+                android:layout_height="83dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/magnetic" />
 
             <TextView
                 android:id="@+id/magnetic"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+            <ImageView
+                android:id="@+id/gyroscopeImage"
+                android:layout_width="107dp"
+                android:layout_height="83dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/gyroscope" />
+
+            <TextView
+                android:id="@+id/gyroscope"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+            <ImageView
+                android:id="@+id/orientationImage"
+                android:layout_width="107dp"
+                android:layout_height="83dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/orientation" />
+
+            <TextView
+                android:id="@+id/orientation"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"/>
 
         </LinearLayout>
     </ScrollView>

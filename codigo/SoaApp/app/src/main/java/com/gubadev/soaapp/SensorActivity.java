@@ -29,41 +29,46 @@ import retrofit2.Response;
 
 public class SensorActivity extends AppCompatActivity implements SensorEventListener {
 
+    private static final String TAG_SENSOR = "SENSORS";
+
     private SensorManager mSensorManager;
     private TextView      gyroscope;
     private TextView      orientation;
     private TextView      magnetic;
 
+    private String        valueGyroscope;
+    private String        valueOrientation;
+    private String        valueMagnetic;
 
-    DecimalFormat decimalFormat = new DecimalFormat("###.###");
+    private DecimalFormat decimalFormat = new DecimalFormat("###.###");
+
+    Button register;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
+        setTitle("Sensors");
 
         // Defino los botones
-        Button limpia   = findViewById(R.id.limpia);
+        register   = findViewById(R.id.registerEvent);
 
         // Defino los TXT para representar los datos de los sensores
-        gyroscope = findViewById(R.id.giroscopo);
-        orientation = findViewById(R.id.orientacion);
+        gyroscope = findViewById(R.id.gyroscope);
+        orientation = findViewById(R.id.orientation);
         magnetic      = findViewById(R.id.magnetic);
 
         // Accedemos al servicio de sensores
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        // Limpio el texto de la deteccion
-        limpia.setOnClickListener(registerEvent);
+        // registro el evento sensor
+        register.setOnClickListener(registerEvent);
+
     }
 
     private View.OnClickListener registerEvent = view -> {
 
         APICatedraSOA clientCatedra = CatedraClient.getClient().create(APICatedraSOA.class);
-
-        //OBTENGO EL TOKEN
-        //MySingleton singleton = MySingleton.getInstance();
-        //String token = singleton.getToken();
 
         //SETTEO EL HEADER
         Map<String, String> headers = new HashMap<>();
@@ -72,8 +77,15 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         Event event = new Event(
                 Constants.ENV,
-                "sensor",
-                "my fisrt sensor");
+                "sensors",
+                valueGyroscope +
+                           valueMagnetic +
+                           valueOrientation);
+
+        Log.e("ERRRRRROR", "" +
+                gyroscope.getText() +
+                magnetic.getText() +
+                orientation.getText());
 
         Call<ResponseGeneric> call = clientCatedra.saveEvent(headers, event);
 
@@ -84,15 +96,15 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             public void onResponse(Call<ResponseGeneric> call, Response<ResponseGeneric> response) {
 
                 if (!response.isSuccessful() || !response.body().getSuccess()) {
-
+                    Log.e(TAG_SENSOR, "Error retrofit: onResponse, saveEvent");
                     return;
                 }
-
+                Log.i(TAG_SENSOR, "OK retrofit: onResponse, saveEvent");
             }
 
             @Override
             public void onFailure(Call<ResponseGeneric> call, Throwable t) {
-
+                Log.e(TAG_SENSOR, "Error retrofit: onFailure, saveEvent");
                 call.cancel();
             }
         });
@@ -123,11 +135,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     // ESCUCHAR EL CAMBIO DE LOS SENSORES
     @Override
     public void onSensorChanged(SensorEvent event) {
-        String txt = "";
+        valueGyroscope = "";
+        valueOrientation = "";
+        valueMagnetic = "";
 
         // CADA SENSOR PUEDE LANZAR UN THREAD QUE PASE POR AQUI
         // PARA ASEGURARNOS ANTE LOS ACCESOS SIMULTANEOS SINCRONIZAMOS
-
         synchronized (this)
         {
             Log.d("sensor", event.sensor.getName());
@@ -135,29 +148,29 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             switch(event.sensor.getType())
             {
                 case Sensor.TYPE_ORIENTATION :
-                    txt += "Orientacion:\n";
-                    txt += "azimut: " + getDirection(event.values[0]) + "\n";
-                    txt += "x: " + decimalFormat.format(event.values[0]) + "\n";
-                    txt += "y: " + decimalFormat.format(event.values[1]) + "\n";
-                    txt += "z: " + decimalFormat.format(event.values[2]) + "\n";
-                    orientation.setText(txt);
+                    valueOrientation += "Orientacion:\n";
+                    valueOrientation += "azimut: " + getDirection(event.values[0]) + "\n";
+                    valueOrientation += "x: " + decimalFormat.format(event.values[0]) + "\n";
+                    valueOrientation += "y: " + decimalFormat.format(event.values[1]) + "\n";
+                    valueOrientation += "z: " + decimalFormat.format(event.values[2]) + "\n";
+                    orientation.setText(valueOrientation);
                     break;
 
                 case Sensor.TYPE_GYROSCOPE:
-                    txt += "Giroscopo:\n";
-                    txt += "x: " + decimalFormat.format(event.values[0]) + " deg/s \n";
-                    txt += "y: " + decimalFormat.format(event.values[1]) + " deg/s \n";
-                    txt += "z: " + decimalFormat.format(event.values[2]) + " deg/s \n";
-                    gyroscope.setText(txt);
+                    valueGyroscope += "Giroscopo:\n";
+                    valueGyroscope += "x: " + decimalFormat.format(event.values[0]) + " deg/s \n";
+                    valueGyroscope += "y: " + decimalFormat.format(event.values[1]) + " deg/s \n";
+                    valueGyroscope += "z: " + decimalFormat.format(event.values[2]) + " deg/s \n";
+                    gyroscope.setText(valueGyroscope);
                     break;
 
                 case Sensor.TYPE_MAGNETIC_FIELD :
-                    txt += "Campo Magnetico:\n";
-                    txt += "x: " + decimalFormat.format(event.values[0]) + " uT" + "\n";
-                    txt += "y: " + decimalFormat.format(event.values[1]) + " uT" + "\n";
-                    txt += "z: " + decimalFormat.format(event.values[2]) + " uT" + "\n";
+                    valueMagnetic += "Campo Magnetico:\n";
+                    valueMagnetic += "x: " + decimalFormat.format(event.values[0]) + " uT" + "\n";
+                    valueMagnetic += "y: " + decimalFormat.format(event.values[1]) + " uT" + "\n";
+                    valueMagnetic += "z: " + decimalFormat.format(event.values[2]) + " uT" + "\n";
 
-                    magnetic.setText(txt);
+                    magnetic.setText(valueMagnetic);
                     break;
 
             }
