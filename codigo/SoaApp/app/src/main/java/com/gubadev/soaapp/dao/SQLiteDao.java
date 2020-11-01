@@ -13,6 +13,7 @@ import com.gubadev.soaapp.singleton.MySingleton;
 import com.gubadev.soaapp.configuration.SQLiteConfig;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dto.UserDTO;
+import com.gubadev.soaapp.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,13 +99,13 @@ public class SQLiteDao {
             }
 
             /*CHECK USER EXIST*/
-            if (idUser == -1 || firstName.isEmpty() || lastName.isEmpty()) {
+            if (idUser == -1 || Util.isEmptyOrNull(firstName) || Util.isEmptyOrNull(lastName)) {
                 Log.e(TAG_DAO_SQLITE, "error: user no exist");
                 return;
             }
 
             /*GET DATE NOW*/
-            String pattern = "yyy-mm-dd hh:mm:ss";
+            String pattern = "yyyy-mm-dd hh:mm:ss";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
             String date = simpleDateFormat.format(new Date());
 
