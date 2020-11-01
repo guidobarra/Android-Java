@@ -18,6 +18,8 @@ import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dto.Event;
 import com.gubadev.soaapp.dto.ResponseGeneric;
 import com.gubadev.soaapp.singleton.MySingleton;
+import com.gubadev.soaapp.util.AlertDialog;
+import com.gubadev.soaapp.util.Internet;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -68,6 +70,18 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     private View.OnClickListener registerEvent = view -> {
 
+        boolean internetConnection = Internet.isInternetAvailable(this);
+
+        if (!internetConnection) {
+            AlertDialog.displayAlertDialog(this,
+                    "Error de conexión",
+                    "Verifique su conexión de internet.",
+                    "OK");
+
+            Log.e("INTERNET", "NO HAY CONEXION INTERNET");
+            return ;
+        }
+
         APICatedraSOA clientCatedra = CatedraClient.getClient().create(APICatedraSOA.class);
 
         //SETTEO EL HEADER
@@ -81,11 +95,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 valueGyroscope +
                            valueMagnetic +
                            valueOrientation);
-
-        Log.e("ERRRRRROR", "" +
-                gyroscope.getText() +
-                magnetic.getText() +
-                orientation.getText());
 
         Call<ResponseGeneric> call = clientCatedra.saveEvent(headers, event);
 
