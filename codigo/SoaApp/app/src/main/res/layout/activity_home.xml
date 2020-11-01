@@ -28,7 +28,7 @@
             android:layout_height="8dp" />
 
         <TextView
-            android:id="@+id/providerTextView"
+            android:id="@+id/batteryText"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:text="Proveedor" />
