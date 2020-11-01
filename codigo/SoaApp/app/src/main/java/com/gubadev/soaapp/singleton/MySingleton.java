@@ -84,6 +84,11 @@ public class MySingleton {
         this.time = time;
     }
 
+    public void stopTimerTask() {
+        timer.cancel();
+        refreshTokenTime.cancel();
+    }
+
     class RefreshTokenTime extends TimerTask {
         @Override
         public void run() {
