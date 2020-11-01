@@ -2,6 +2,8 @@ package com.gubadev.soaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
@@ -34,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG_RETROFIT = "RETROFIT";
 
     private TextView emailEditText;
-    private TextView providerEditText;
+    private TextView batteryEditText;
 
     private Button logOut;
     private Button playGame;
@@ -43,6 +45,14 @@ public class HomeActivity extends AppCompatActivity {
 
     private String batteryLevel;
 
+    private BroadcastReceiver batteryBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            batteryEditText.setText("Battery level: "+ level + "%");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
         setTitle("Home");
 
         emailEditText = findViewById(R.id.emailTextView);
-        providerEditText = findViewById(R.id.providerTextView);
+        batteryEditText = findViewById(R.id.batteryText);
 
         logOut = findViewById(R.id.logOutButton);
         playGame = findViewById(R.id.playButton);
@@ -63,8 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         topGamer.setOnClickListener(topGamerView);
 
         emailEditText.setText(Html.fromHtml("Welcome <b>" + MySingleton.getInstance().getEmail() +"</b>"));
-
-        showLevelBattery();
+        registerReceiver(batteryBroadcastReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         saveEvent();
     }
@@ -119,10 +128,10 @@ public class HomeActivity extends AppCompatActivity {
         float batteryPct = level * 100 / (float) scale;
 
         batteryLevel = "Battery level: "+ batteryPct + "%";
-        providerEditText.setText(batteryLevel);
+        batteryEditText.setText(batteryLevel);
         AlertDialog.displayAlertDialog(HomeActivity.this,
                 "Battery",
-                "Level of battery is: " + batteryLevel,
+                "Level of battery is: " + batteryPct + "%",
                 "OK");
     }
 
@@ -169,4 +178,10 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        FirebaseAuth.getInstance().signOut();
+
+        super.onDestroy();
+    }
 }
