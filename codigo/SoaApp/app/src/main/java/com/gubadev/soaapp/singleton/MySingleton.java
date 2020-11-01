@@ -26,7 +26,7 @@ public class MySingleton {
 
     private Integer time;
 
-    private static final Integer DELAY = 5*1000;
+    private static final Integer DELAY = 5*1000*60;
 
     private static final Integer PERIOD = 25*1000*60;
 
@@ -41,7 +41,7 @@ public class MySingleton {
     }
 
     private MySingleton() {
-        timer.schedule(refreshTokenTime, DELAY, 30000);
+        timer.schedule(refreshTokenTime, DELAY, PERIOD);
     }
 
     public String getToken() {
