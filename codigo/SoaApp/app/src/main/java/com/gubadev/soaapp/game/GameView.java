@@ -14,7 +14,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
-
 import com.gubadev.soaapp.singleton.MySingleton;
 import com.gubadev.soaapp.dao.SQLiteDao;
 import com.gubadev.soaapp.util.AlertDialog;
@@ -97,7 +96,6 @@ public class GameView extends View implements SensorEventListener {
             MySingleton.getInstance().setTime(timeTotal);
 
             SQLiteDao.saveScore(SQLiteDao.builder(activity));
-            //Intent intent = new Intent(this.activity, HomeActivity.class);
             AlertDialog.displayAlertDialogGame(
                     activity,
                    "Game Over",
