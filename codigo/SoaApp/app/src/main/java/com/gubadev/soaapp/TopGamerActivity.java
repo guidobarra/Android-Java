@@ -65,9 +65,9 @@ public class TopGamerActivity extends AppCompatActivity {
             int i = 0;
             String value = "Top" + "|Date Hour___________|"+ format("Name",13) + "|Score";
             map.get(i).setText(Html.fromHtml("<b>" + value +"</b>"));
-
+            i++;
             for (Score s: scores) {
-                if (i<6 && i!=0) {
+                if (i<6) {
                     value  = map.get(i).getText() + "|" +
                             s.getDate() + "|" +
                             format(s.getNameGamer().trim(), 15) + "|" +
