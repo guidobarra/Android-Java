@@ -104,7 +104,7 @@ public class SQLiteDao {
             }
 
             /*GET DATE NOW*/
-            String pattern = "YYYY-MM-DD HH:MM:SS";
+            String pattern = "yyy-mm-dd hh:mm:ss";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
             String date = simpleDateFormat.format(new Date());
 

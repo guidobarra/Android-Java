@@ -14,8 +14,6 @@ public class Constants {
     public static final String STATE_ERROR = "error";
 
     public static final Long NUM_COMMISSION = 2L;
-    public static final Integer NUM_GROUP = 22;
-
 
     public static final String TABLE_USER = "user";
     public static final String EMAIL = "email";
