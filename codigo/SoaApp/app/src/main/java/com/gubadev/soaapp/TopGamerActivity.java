@@ -40,7 +40,7 @@ public class TopGamerActivity extends AppCompatActivity {
 
         instanceMap();
 
-        ThreedAsyncTask hilo = new ThreedAsyncTask();
+        SQLiteTopGamerAsyncTask hilo = new SQLiteTopGamerAsyncTask();
         hilo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -53,7 +53,7 @@ public class TopGamerActivity extends AppCompatActivity {
         map.put(5, fifth);
     }
 
-    class ThreedAsyncTask extends AsyncTask<Void, Void, List<Score>> {
+    class SQLiteTopGamerAsyncTask extends AsyncTask<Void, Void, List<Score>> {
 
         @Override
         protected void onPreExecute() {
