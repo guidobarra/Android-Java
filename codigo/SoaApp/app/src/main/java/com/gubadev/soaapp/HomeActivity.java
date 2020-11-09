@@ -117,6 +117,15 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void showLevelBattery() {
 
+        batteryLevel = "Battery level: "+ getLevelBattery() + "%";
+        batteryEditText.setText(batteryLevel);
+        AlertDialog.displayAlertDialog(HomeActivity.this,
+                "Battery",
+                "Level of battery is: " + getLevelBattery() + "%",
+                "OK");
+    }
+
+    private float getLevelBattery() {
         IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = registerReceiver(null, iFilter);
 
@@ -126,13 +135,7 @@ public class HomeActivity extends AppCompatActivity {
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
         float batteryPct = level * 100 / (float) scale;
-
-        batteryLevel = "Battery level: "+ batteryPct + "%";
-        batteryEditText.setText(batteryLevel);
-        AlertDialog.displayAlertDialog(HomeActivity.this,
-                "Battery",
-                "Level of battery is: " + batteryPct + "%",
-                "OK");
+        return batteryPct;
     }
 
     /**
@@ -151,7 +154,7 @@ public class HomeActivity extends AppCompatActivity {
         Event event = new Event(
                 Constants.ENV,
                 "login",
-                "level battery: " + batteryLevel);
+                "level battery: " + getLevelBattery());
 
         //CALL API REST CATEDRA /event
         Call<ResponseGeneric> call = clientCatedra.saveEvent(headers, event);
