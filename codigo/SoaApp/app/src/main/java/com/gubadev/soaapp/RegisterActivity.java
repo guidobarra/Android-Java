@@ -98,16 +98,17 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener(RegisterActivity.this,
         task -> {
-            /*CHECK IS SUCCESSFUL*/
-            if (!task.isSuccessful()) {
-                showAlert();
-                Log.e(TAG_FIREBASE_REGISTER, "createUserWithEmailAndPassword:failure", task.getException());
-                return;
-            }
 
             Log.i(TAG_FIREBASE_REGISTER, "createUserWithEmailAndPassword:success");
 
             try {
+
+                /*CHECK IS SUCCESSFUL*/
+                if (!task.isSuccessful()) {
+                    Log.e(TAG_FIREBASE_REGISTER, "createUserWithEmailAndPassword:failure", task.getException());
+                    throw new Exception("ERROR: createUserWithEmailAndPassword of Firebase failure");
+                }
+
                 /*CREATE JSON FOR HTTP REST /register */
                 JSONObject requestJSON = new JSONObject();
 

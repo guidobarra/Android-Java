@@ -2,21 +2,16 @@ package com.gubadev.soaapp.service;
 
 import android.app.Activity;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.gubadev.soaapp.LogInActivity;
-import com.gubadev.soaapp.R;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dao.SQLiteDao;
 import com.gubadev.soaapp.dto.UserDTO;
-import com.gubadev.soaapp.util.AlertDialog;
 import com.gubadev.soaapp.util.Util;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -24,7 +19,6 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 public class HTTPService extends IntentService {
 
@@ -145,16 +139,6 @@ public class HTTPService extends IntentService {
 
         /*SEND BROADCAST */
         sendBroadcast(i);
-    }
-
-    /**
-     * show Alert
-     */
-    private void showAlert() {
-        AlertDialog.displayAlertDialog(activity,
-                "Error",
-                "Se ha producido un error autenticando el usuario",
-                "OK");
     }
 
     /**

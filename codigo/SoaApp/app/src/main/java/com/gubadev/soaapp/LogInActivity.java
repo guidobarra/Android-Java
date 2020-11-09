@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
-//import com.gubadev.soaapp.broadcast.ReceptorOperation;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.service.HTTPService;
 import com.gubadev.soaapp.singleton.MySingleton;
@@ -95,16 +94,18 @@ public class LogInActivity extends AppCompatActivity {
         .addOnCompleteListener(LogInActivity.this,
         task -> {
 
-            /*CHECK IS SUCCESSFUL*/
-            if (!task.isSuccessful()) {
-                Log.e(TAG_FIREBASE_LOGIN, "signInWithEmailAndPassword: failure", task.getException());
-                showAlert();
-                return;
-            }
+
 
             Log.i(TAG_FIREBASE_LOGIN, "signInWithEmailAndPassword: success");
 
             try {
+
+                /*CHECK IS SUCCESSFUL*/
+                if (!task.isSuccessful()) {
+                    Log.e(TAG_FIREBASE_LOGIN, "signInWithEmailAndPassword: failure", task.getException());
+                    throw new Exception("ERROR: signInWithEmailAndPassword of Firebase failure");
+                }
+
                 /*CREATE JSON FOR HTTP REST /login */
                 JSONObject requestJSON = new JSONObject();
 
