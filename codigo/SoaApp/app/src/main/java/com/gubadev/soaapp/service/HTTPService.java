@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.gubadev.soaapp.LogInActivity;
+import com.gubadev.soaapp.R;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.dao.SQLiteDao;
 import com.gubadev.soaapp.dto.UserDTO;
@@ -23,6 +24,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class HTTPService extends IntentService {
 
@@ -48,6 +50,8 @@ public class HTTPService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        String responseJSON = "";
+        String email = "";
         try {
             Log.i(TAG_HTTP_SERVICE, "onHandleIntent");
 
@@ -62,7 +66,6 @@ public class HTTPService extends IntentService {
             Log.i(TAG_HTTP_SERVICE, "requestJSON: "+requestJSON);
             Log.i(TAG_HTTP_SERVICE, "urlPath: "+urlPath);
 
-            String responseJSON = "";
             URL url = new URL(urlPath);
 
             /*CONFIGURATION REST*/
@@ -105,8 +108,7 @@ public class HTTPService extends IntentService {
             /*CHECK RESPONSE JSON*/
             if (Util.isEmptyOrNull(responseJSON) || !responseJson.getBoolean("success")) {
                 Log.e(TAG_JSON, "error json failure or JSON empty");
-                showAlert();
-                return;
+                throw new Exception("ERROR: error json failure or JSON empty");
             }
 
             /*CHECK IF SAVE USER*/
@@ -126,21 +128,23 @@ public class HTTPService extends IntentService {
                 SQLiteDao.saveUser(user, SQLiteDao.builder(activity));
             }
 
-            /*INSTANCE INTENT, BROADCAST RECEPTOR OPERATION*/
-            Intent i = new Intent("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
-            i.putExtra("responseJSON", responseJSON);
-            i.putExtra("email", requestJSONObject.getString("email"));
-
-            /*SEND BROADCAST */
-            sendBroadcast(i);
-
+            email = requestJSONObject.getString("email");
             Log.i(TAG_HTTP_SERVICE, Constants.STATE_SUCCESS);
         } catch (Exception e) {
             Log.e(TAG_HTTP_SERVICE, Constants.STATE_ERROR);
-            showAlert();
+            responseJSON = "";
+            email = "";
             e.printStackTrace();
         }
 
+        /*INSTANCE INTENT, BROADCAST RECEPTOR OPERATION*/
+
+        Intent i = new Intent(intent.getExtras().getString("action"));
+        i.putExtra("responseJSON", responseJSON);
+        i.putExtra("email", email);
+
+        /*SEND BROADCAST */
+        sendBroadcast(i);
     }
 
     /**

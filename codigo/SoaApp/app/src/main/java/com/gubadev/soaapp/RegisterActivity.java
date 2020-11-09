@@ -3,6 +3,8 @@ package com.gubadev.soaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -13,9 +15,10 @@ import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.gubadev.soaapp.broadcast.ReceptorOperation;
+//import com.gubadev.soaapp.broadcast.ReceptorOperation;
 import com.gubadev.soaapp.constant.Constants;
 import com.gubadev.soaapp.service.HTTPService;
+import com.gubadev.soaapp.singleton.MySingleton;
 import com.gubadev.soaapp.util.AlertDialog;
 import com.gubadev.soaapp.util.Internet;
 import com.gubadev.soaapp.util.Util;
@@ -27,6 +30,8 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG_FIREBASE_REGISTER = "FIREBASE_REGISTER";
 
     private static final String TAG_JSON = "JSON";
+
+    private static final String ACTION_REGISTER = "com.example.intentservice.intent.action.RESPUESTA_OPERACION_REGISTRO";
 
     Button register;
 
@@ -62,6 +67,10 @@ public class RegisterActivity extends AppCompatActivity {
         configurationBroadcastReceiver();
     }
 
+    public void setEnabledButton(boolean b) {
+        register.setEnabled(b);
+    }
+
     /**
      * action OnClickListener for register
      */
@@ -79,6 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (!validate()) {
             return;
         }
+
+        setEnabledButton(false);
 
         /*GET INSTANCE FIREBASE*/
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -116,12 +127,15 @@ public class RegisterActivity extends AppCompatActivity {
                 intent.putExtra("requestJSON", requestJSON.toString());
                 intent.putExtra("url", Constants.URI_CATEDRA_SOA_REGISTER);
                 intent.putExtra("isSaveUser", true);
+                intent.putExtra("action", ACTION_REGISTER);
 
                 /*START SERVICE*/
                 startService(intent);
 
             } catch (Exception e ) {
                 Log.e(TAG_JSON, "error json");
+                showAlert();
+                setEnabledButton(true);
                 e.printStackTrace();
             }
 
@@ -134,7 +148,7 @@ public class RegisterActivity extends AppCompatActivity {
      * configuration Broadcast Receiver for communication HTTP REST register of user
      */
     private void configurationBroadcastReceiver() {
-        IntentFilter filter = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+        IntentFilter filter = new IntentFilter(ACTION_REGISTER);
 
         filter.addCategory(Intent.CATEGORY_DEFAULT);
 
@@ -147,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void showAlert() {
         AlertDialog.displayAlertDialog(RegisterActivity.this,
                 "Error",
-                "Se ha producido un error autenticando el usuario",
+                "Se ha producido un error al registrar el usuario",
                 "OK");
     }
 
@@ -193,6 +207,46 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    class ReceptorOperation extends BroadcastReceiver {
+
+        private static final String TAG_JSON = "JSON RECEPTOR OPERATION";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                String responseJSON = intent.getStringExtra("responseJSON");
+                String email = intent.getStringExtra("email");
+                JSONObject responseJson = new JSONObject(responseJSON);
+
+                /*CHECK RESPONSE*/
+                if (Util.isEmptyOrNull(responseJSON) || !responseJson.getBoolean("success")) {
+                    Log.e(TAG_JSON, "error json faurile or JSON empty");
+                    throw new Exception("ERROR: error json failure or JSON empty");
+                }
+
+                /*SET EMAIL, TOKEN AND TOKEN REFRESH IN MYSINGLENTON */
+                MySingleton.getInstance().setEmail(intent.getStringExtra("email"));
+                MySingleton.getInstance().setToken(responseJson.getString("token"));
+                MySingleton.getInstance().setTokenRefresh(responseJson.getString("token_refresh"));
+
+                /*INSTANCE INTENT, LOGINACTIVITY -> HomeActivity*/
+                Intent home = new Intent(context, HomeActivity.class);
+                home.putExtra("email", email);
+                home.putExtra("provider", "BASICO");
+
+                /*START INTENT*/
+                context.startActivity(home);
+
+            } catch (Exception e) {
+                Log.e(TAG_JSON, "error");
+                showAlert();
+                e.printStackTrace();
+            }
+            setEnabledButton(true);
+        }
     }
 
 }
