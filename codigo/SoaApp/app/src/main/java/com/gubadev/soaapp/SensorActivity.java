@@ -38,9 +38,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private TextView      orientation;
     private TextView      magnetic;
 
-    private String        valueGyroscope;
-    private String        valueOrientation;
-    private String        valueMagnetic;
+    private String        valueGyroscope = "";
+    private String        valueOrientation = "";
+    private String        valueMagnetic = "";
 
     private DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
@@ -144,9 +144,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     // ESCUCHAR EL CAMBIO DE LOS SENSORES
     @Override
     public void onSensorChanged(SensorEvent event) {
-        valueGyroscope = "";
-        valueOrientation = "";
-        valueMagnetic = "";
 
         // CADA SENSOR PUEDE LANZAR UN THREAD QUE PASE POR AQUI
         // PARA ASEGURARNOS ANTE LOS ACCESOS SIMULTANEOS SINCRONIZAMOS
@@ -157,6 +154,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             switch(event.sensor.getType())
             {
                 case Sensor.TYPE_ORIENTATION :
+
+                    valueOrientation = "";
                     valueOrientation += "Orientacion:\n";
                     valueOrientation += "azimut: " + getDirection(event.values[0]) + "\n";
                     valueOrientation += "x: " + decimalFormat.format(event.values[0]) + "\n";
@@ -166,6 +165,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                     break;
 
                 case Sensor.TYPE_GYROSCOPE:
+                    valueGyroscope = "";
                     valueGyroscope += "Giroscopo:\n";
                     valueGyroscope += "x: " + decimalFormat.format(event.values[0]) + " deg/s \n";
                     valueGyroscope += "y: " + decimalFormat.format(event.values[1]) + " deg/s \n";
@@ -174,6 +174,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                     break;
 
                 case Sensor.TYPE_MAGNETIC_FIELD :
+                    valueMagnetic = "";
                     valueMagnetic += "Campo Magnetico:\n";
                     valueMagnetic += "x: " + decimalFormat.format(event.values[0]) + " uT" + "\n";
                     valueMagnetic += "y: " + decimalFormat.format(event.values[1]) + " uT" + "\n";
