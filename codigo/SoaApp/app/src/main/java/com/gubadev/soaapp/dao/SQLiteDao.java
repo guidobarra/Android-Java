@@ -99,13 +99,19 @@ public class SQLiteDao {
             }
 
             /*CHECK USER EXIST*/
-            if (idUser == -1 || Util.isEmptyOrNull(firstName) || Util.isEmptyOrNull(lastName)) {
+            if (idUser == -1) {
                 Log.e(TAG_DAO_SQLITE, "error: user no exist");
                 return;
             }
+            if (Util.isEmptyOrNull(firstName)) {
+                firstName = "__";
+            }
+            if (Util.isEmptyOrNull(lastName)) {
+                lastName = "__";
+            }
 
             /*GET DATE NOW*/
-            String pattern = "yyyy-mm-dd hh:mm:ss";
+            String pattern = "yyyy-MM-dd hh:mm:ss";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
             String date = simpleDateFormat.format(new Date());
 
